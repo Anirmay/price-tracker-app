@@ -1,0 +1,29 @@
+{
+  "name": "price-tracker-frontend",
+  "version": "1.0.0",
+  "description": "E-commerce price tracking application frontend",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "caniuse-lite": "^1.0.30001579",
+    "date-fns": "^2.30.0",
+    "jwt-decode": "^3.1.2",
+    "next": "^13.4.0",
+    "price-tracker-monorepo": "file:..",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-toastify": "^9.1.2",
+    "zustand": "^4.3.9"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "eslint": "^8.41.0",
+    "eslint-config-next": "^13.4.0",
+    "typescript": "6.0.2"
+  }
+}
