@@ -88,7 +88,7 @@ export default function Profile() {
       <Header />
       <div className={styles.container}>
         <div className={styles.content}>
-          <h1>My Profile Settings</h1>
+          <h1 className={styles.title}>My Profile Settings</h1>
 
           {error && <div className={styles.alert}>{error}</div>}
           {success && <div className={styles.success}>{success}</div>}
@@ -96,10 +96,10 @@ export default function Profile() {
           <form onSubmit={handleSubmit} className={styles.form}>
             {/* Basic Information */}
             <section className={styles.section}>
-              <h2>📋 Basic Information</h2>
+              <h2 className={styles.sectionTitle}>📋 Basic Information</h2>
               
               <div className={styles.formGroup}>
-                <label htmlFor="name">Full Name *</label>
+                <label htmlFor="name" className={styles.label}>Full Name *</label>
                 <input
                   type="text"
                   id="name"
@@ -108,17 +108,19 @@ export default function Profile() {
                   onChange={handleChange}
                   required
                   placeholder="Enter your full name"
+                  className={styles.input}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="email">Email Address</label>
+                <label htmlFor="email" className={styles.label}>Email Address</label>
                 <input
                   type="email"
                   id="email"
                   value={user?.email || ''}
                   disabled
                   placeholder="Your registered email"
+                  className={styles.input}
                 />
                 <p className={styles.hint}>Email cannot be changed</p>
               </div>
@@ -126,7 +128,7 @@ export default function Profile() {
 
             {/* Notification Preferences */}
             <section className={styles.section}>
-              <h2>🔔 Notification Preferences</h2>
+              <h2 className={styles.sectionTitle}>🔔 Notification Preferences</h2>
 
               {/* Email Notifications */}
               <div className={styles.notificationCard}>
@@ -139,7 +141,7 @@ export default function Profile() {
                       onChange={handleChange}
                       id="email-notif"
                     />
-                    <label htmlFor="email-notif">📧 Email Notifications</label>
+                    <label htmlFor="email-notif" className={styles.label}>📧 Email Notifications</label>
                   </div>
                   <button
                     type="button"
@@ -178,7 +180,7 @@ export default function Profile() {
                       onChange={handleChange}
                       id="push-notif"
                     />
-                    <label htmlFor="push-notif">🔔 Browser Push Notifications</label>
+                    <label htmlFor="push-notif" className={styles.label}>🔔 Browser Push Notifications</label>
                   </div>
                   <button
                     type="button"
@@ -217,7 +219,7 @@ export default function Profile() {
                       onChange={handleChange}
                       id="sms-notif"
                     />
-                    <label htmlFor="sms-notif">💬 SMS Notifications</label>
+                    <label htmlFor="sms-notif" className={styles.label}>💬 SMS Notifications</label>
                   </div>
                   <button
                     type="button"
@@ -235,7 +237,7 @@ export default function Profile() {
                       Get alerts as SMS text messages to your phone number.
                     </p>
                     <div className={styles.formGroup}>
-                      <label htmlFor="phone">Phone Number *</label>
+                      <label htmlFor="phone" className={styles.label}>Phone Number *</label>
                       <input
                         type="tel"
                         id="phone"
@@ -244,6 +246,7 @@ export default function Profile() {
                         onChange={handleChange}
                         placeholder="+91 98765 43210"
                         disabled={!formData.notifications.sms}
+                        className={styles.input}
                       />
                       <p className={styles.hint}>
                         Include country code (e.g., +91 for India)
@@ -271,7 +274,7 @@ export default function Profile() {
 
             {/* Alert Summary */}
             <section className={styles.section}>
-              <h2>📊 Notification Summary</h2>
+              <h2 className={styles.sectionTitle}>📊 Notification Summary</h2>
               <div className={styles.summaryGrid}>
                 <div className={styles.summaryCard}>
                   <span className={styles.summaryIcon}>📧</span>
