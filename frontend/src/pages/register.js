@@ -27,12 +27,20 @@ export default function Register() {
     setError('');
 
     try {
+      console.log('Attempting registration with:', { name: formData.name, email: formData.email });
       const response = await authService.register(formData);
+      console.log('Registration successful:', response.data);
       localStorage.setItem('token', response.data.token);
       setUser(response.data.user);
       setToken(response.data.token);
       router.push('/dashboard');
     } catch (err) {
+      console.error('Registration error details:', {
+        message: err.response?.data?.message,
+        status: err.response?.status,
+        data: err.response?.data,
+        error: err.message
+      });
       setError(err.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);

@@ -26,12 +26,20 @@ export default function Login() {
     setError('');
 
     try {
+      console.log('Attempting login with:', { email: formData.email });
       const response = await authService.login(formData);
+      console.log('Login successful:', response.data);
       localStorage.setItem('token', response.data.token);
       setUser(response.data.user);
       setToken(response.data.token);
       router.push('/dashboard');
     } catch (err) {
+      console.error('Login error details:', {
+        message: err.response?.data?.message,
+        status: err.response?.status,
+        data: err.response?.data,
+        error: err.message
+      });
       setError(err.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
