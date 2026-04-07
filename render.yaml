@@ -34,3 +34,5 @@ services:
         value: production
       - key: NEXT_PUBLIC_API_URL
         value: https://price-tracker-api.onrender.com/api
+      - key: NEXT_PUBLIC_VAPID_PUBLIC_KEY
+        value: BDNnlzwwFRROYnQsoDb2xu8EHbrelhJGpl-kKDB1BcASfZRC29t8anjJ_wRPMjcs1seQK2vFBEEKcqLakDVS4cU
