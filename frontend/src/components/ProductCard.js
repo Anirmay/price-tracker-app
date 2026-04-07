@@ -1,11 +1,9 @@
 import styles from './ProductCard.module.css';
 import { formatDistanceToNow } from 'date-fns';
 import { formatPrice } from '../utils/formatPrice';
-import { useState } from 'react';
-import PriceChart from './PriceChart';
+import Link from 'next/link';
 
 export default function ProductCard({ product, onDelete, onAddAlert }) {
-  const [showChart, setShowChart] = useState(false);
   const priceChange = product.originalPrice - product.currentPrice;
   const percentageChange = (
     ((priceChange) / product.originalPrice) *
@@ -50,9 +48,9 @@ export default function ProductCard({ product, onDelete, onAddAlert }) {
         </div>
 
         <div className={styles.actions}>
-          <button onClick={() => setShowChart(true)} className={styles.chartBtn}>
+          <Link href={`/products/${product._id}/price-history`} className={styles.chartBtn}>
             📊 Price History
-          </button>
+          </Link>
           <button onClick={() => onAddAlert(product)} className={styles.alertBtn}>
             Set Alert
           </button>
@@ -61,8 +59,6 @@ export default function ProductCard({ product, onDelete, onAddAlert }) {
           </button>
         </div>
       </div>
-
-      {showChart && <PriceChart product={product} onClose={() => setShowChart(false)} />}
     </div>
   );
 }

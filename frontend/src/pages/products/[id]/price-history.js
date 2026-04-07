@@ -1,3 +1,10 @@
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import Header from '../../components/Header';
+import styles from '../../styles/PriceHistory.module.css';
+import { productService } from '../../services/api';
+import { formatPrice } from '../../utils/formatPrice';
 import {
   LineChart,
   Line,
@@ -8,29 +15,74 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import styles from './PriceChart.module.css';
-import { formatPrice } from '../utils/formatPrice';
 
-export default function PriceChart({ product, onClose }) {
-  // Format price history data for chart
-  const chartData = (product.priceHistory || []).map((entry) => ({
-    date: new Date(entry.date).toLocaleDateString('en-IN', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    price: entry.price,
-    timestamp: new Date(entry.date),
-  }));
+export default function PriceHistory() {
+  const router = useRouter();
+  const { id } = router.query;
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // Sort by date (oldest first)
-  chartData.sort((a, b) => a.timestamp - b.timestamp);
+  useEffect(() => {
+    if (!id) return;
+    loadProduct();
+  }, [id]);
 
-  // Find min and max prices
+  const loadProduct = async () => {
+    try {
+      setLoading(true);
+      const response = await productService.getProduct(id);
+      setProduct(response.data.product);
+    } catch (err) {
+      setError('Failed to load product');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <div className={styles.container}>
+          <div className={styles.loading}>Loading...</div>
+        </div>
+      </>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <>
+        <Header />
+        <div className={styles.container}>
+          <div className={styles.error}>{error || 'Product not found'}</div>
+          <Link href="/dashboard" className={styles.backBtn}>
+            ← Back to Dashboard
+          </Link>
+        </div>
+      </>
+    );
+  }
+
+  // Format chart data
+  const chartData = (product.priceHistory || [])
+    .map((entry) => ({
+      date: new Date(entry.date).toLocaleDateString('en-IN', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+      price: entry.price,
+      timestamp: new Date(entry.date),
+    }))
+    .sort((a, b) => a.timestamp - b.timestamp);
+
   const prices = chartData.map(d => d.price);
-  const minPrice = Math.min(...prices);
-  const maxPrice = Math.max(...prices);
+  const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+  const maxPrice = prices.length > 0 ? Math.max(...prices) : 0;
   const currentPrice = product.currentPrice;
   const priceDropped = (maxPrice - currentPrice).toFixed(0);
 
@@ -47,16 +99,22 @@ export default function PriceChart({ product, onClose }) {
   };
 
   return (
-    <div className={styles.modal}>
-      <div className={styles.modalContent}>
+    <>
+      <Header />
+      <div className={styles.container}>
         <div className={styles.header}>
+          <Link href="/dashboard" className={styles.backBtn}>
+            ← Back to Dashboard
+          </Link>
+          <h1>Price History</h1>
+        </div>
+
+        <div className={styles.productInfo}>
+          {product.image && <img src={product.image} alt={product.name} />}
           <div>
-            <h2>Price History</h2>
-            <p className={styles.productName}>{product.name}</p>
+            <h2>{product.name}</h2>
+            <p className={styles.platform}>{product.platform}</p>
           </div>
-          <button className={styles.closeBtn} onClick={onClose}>
-            ✕
-          </button>
         </div>
 
         {chartData.length > 0 ? (
@@ -81,8 +139,9 @@ export default function PriceChart({ product, onClose }) {
             </div>
 
             <div className={styles.chartContainer}>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+              <h3>Price Trend Over Time</h3>
+              <ResponsiveContainer width="100%" height={500}>
+                <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 100 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis
                     dataKey="date"
@@ -90,7 +149,6 @@ export default function PriceChart({ product, onClose }) {
                     tick={{ fontSize: 12 }}
                     angle={-45}
                     textAnchor="end"
-                    height={80}
                   />
                   <YAxis
                     stroke="#666"
@@ -110,9 +168,6 @@ export default function PriceChart({ product, onClose }) {
                   />
                 </LineChart>
               </ResponsiveContainer>
-            </div>
-
-            <div className={styles.footer}>
               <p className={styles.info}>
                 Showing {chartData.length} price records over time
               </p>
@@ -125,6 +180,6 @@ export default function PriceChart({ product, onClose }) {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }
