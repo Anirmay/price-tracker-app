@@ -33,4 +33,4 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_URL
-        value: https://price-tracker-app-8e4g.onrender.com/api
+        value: https://price-tracker-api.onrender.com/api

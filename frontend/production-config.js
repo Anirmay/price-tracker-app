@@ -3,7 +3,7 @@
 
 module.exports = {
   // API Configuration
-  API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://price-tracker-api.onrender.com',
+  API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://price-tracker-api.onrender.com/api',
   
   // Session Configuration
   SESSION_TIMEOUT: 7 * 24 * 60 * 60 * 1000, // 7 days
