@@ -29,9 +29,10 @@ const register = async (req, res) => {
 
     await user.save();
 
-    // Generate token
+    // Generate token (use default expiry if not provided)
+    const jwtExpiry = process.env.JWT_EXPIRY || '7d';
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRY,
+      expiresIn: jwtExpiry,
     });
 
     res.status(201).json({
@@ -74,9 +75,10 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
-    // Generate token
+    // Generate token (use default expiry if not provided)
+    const jwtExpiry = process.env.JWT_EXPIRY || '7d';
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRY,
+      expiresIn: jwtExpiry,
     });
 
     console.log('Login successful:', email);
