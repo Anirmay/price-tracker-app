@@ -303,14 +303,60 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 30px 16px;
+  }
+
+  .backBtn {
+    padding: 8px 16px;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
   .header {
     flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .badge {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .alertStatus {
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+    padding: 20px;
+  }
+
+  .statusItem label {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .statusItem p {
+    font-size: 16px;
+  }
+
+  .productSection {
+    padding: 20px;
+  }
+
+  .productSection h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
   }
 
   .product {
     flex-direction: column;
     align-items: center;
+    text-align: center;
+    gap: 15px;
   }
 
   .productImage img {
@@ -318,7 +364,258 @@
     height: 150px;
   }
 
+  .productDetails h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .priceInfo {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+  }
+
+  .priceItem label {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .price {
+    font-size: 24px;
+  }
+
+  .originalPrice {
+    font-size: 16px;
+  }
+
+  .metadata {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .metadata label {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .metadata p {
+    font-size: 14px;
+  }
+
+  .alertConfig {
+    padding: 20px;
+  }
+
+  .alertConfig h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .configItems {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .configItem {
+    padding: 12px;
+  }
+
+  .configItem label {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .configItem p {
+    font-size: 16px;
+  }
+
   .actions {
     flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+  }
+
+  .buyBtn,
+  .deactivateBtn,
+  .activateBtn,
+  .deleteBtn {
+    padding: 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 12px;
+  }
+
+  .backBtn {
+    padding: 6px 12px;
+    font-size: 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+  }
+
+  .loading,
+  .error {
+    padding: 30px 12px;
+    font-size: 14px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .header h1 {
+    font-size: 18px;
+  }
+
+  .badge {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .alertStatus {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .statusItem {
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+  }
+
+  .statusItem label {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .statusItem p {
+    font-size: 14px;
+  }
+
+  .productSection {
+    padding: 15px;
+    border-bottom-width: 1px;
+  }
+
+  .productSection h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .product {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .productImage {
+    flex-shrink: 0;
+  }
+
+  .productImage img {
+    width: 120px;
+    height: 120px;
+    border-radius: 6px;
+  }
+
+  .productDetails h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .priceInfo {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+  }
+
+  .priceItem {
+    padding: 8px;
+    background: #f9f9f9;
+    border-radius: 6px;
+  }
+
+  .priceItem label {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .originalPrice {
+    font-size: 14px;
+  }
+
+  .metadata {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .metadata label {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .metadata p {
+    font-size: 13px;
+  }
+
+  .alertConfig {
+    padding: 15px;
+    background-color: #fafafa;
+    border-radius: 8px;
+  }
+
+  .alertConfig h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .configItems {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .configItem {
+    padding: 10px;
+    border-radius: 6px;
+  }
+
+  .configItem label {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .configItem p {
+    font-size: 14px;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px;
+  }
+
+  .buyBtn,
+  .deactivateBtn,
+  .activateBtn,
+  .deleteBtn {
+    padding: 10px;
+    font-size: 12px;
+    min-height: 44px;
+    border-radius: 6px;
   }
 }

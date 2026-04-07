@@ -248,13 +248,239 @@
 }
 
 @media (max-width: 768px) {
-  .alerts {
-    grid-template-columns: 1fr;
+  .container {
+    padding: 30px 16px;
   }
 
   .header {
     flex-direction: column;
     gap: 15px;
     align-items: flex-start;
+    margin-bottom: 30px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .backBtn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .alerts {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .alertCard {
+    border-radius: 8px;
+  }
+
+  .alertCard:hover {
+    transform: none;
+  }
+
+  .alertHeader {
+    padding: 12px;
+  }
+
+  .badge {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .productInfo {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .productInfo img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .details h3 {
+    font-size: 14px;
+  }
+
+  .price {
+    font-size: 18px;
+    margin: 6px 0 2px 0;
+  }
+
+  .platform {
+    font-size: 11px;
+  }
+
+  .alertDetails {
+    font-size: 11px;
+  }
+
+  .footer {
+    gap: 6px;
+    padding: 10px 12px;
+  }
+
+  .viewBtn,
+  .buyBtn,
+  .deleteBtn {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .empty {
+    padding: 40px 15px;
+  }
+
+  .empty p {
+    font-size: 16px;
+  }
+
+  .cta {
+    padding: 10px 20px;
+    font-size: 14px;
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 12px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .backBtn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  .error {
+    padding: 12px;
+    font-size: 13px;
+    margin-bottom: 15px;
+  }
+
+  .loading {
+    padding: 30px 12px;
+    font-size: 14px;
+  }
+
+  .empty {
+    padding: 30px 12px;
+    border-radius: 6px;
+  }
+
+  .empty p {
+    font-size: 13px;
+    margin: 8px 0;
+  }
+
+  .cta {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 12px;
+    margin-top: 12px;
+  }
+
+  .alerts {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .alertCard {
+    border-radius: 6px;
+    border-width: 1px;
+  }
+
+  .alertCard:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .alertHeader {
+    padding: 10px;
+    border-bottom-width: 1px;
+  }
+
+  .alertType {
+    gap: 6px;
+  }
+
+  .badge {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .active,
+  .inactive,
+  .triggered {
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+
+  .productInfo {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .productInfo img {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+  }
+
+  .details {
+    flex: auto;
+  }
+
+  .details h3 {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .price {
+    font-size: 16px;
+    margin: 4px 0 2px 0;
+  }
+
+  .platform {
+    font-size: 10px;
+  }
+
+  .alertDetails {
+    font-size: 10px;
+    margin-top: 6px;
+  }
+
+  .alertDetails p {
+    margin: 3px 0;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 10px;
+    border-top-width: 1px;
+  }
+
+  .viewBtn,
+  .buyBtn,
+  .deleteBtn {
+    padding: 6px;
+    font-size: 11px;
+    border-radius: 4px;
   }
 }

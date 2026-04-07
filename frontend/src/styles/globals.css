@@ -23,3 +23,23 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+button {
+  border: none;
+  cursor: pointer;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  html,
+  body {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html,
+  body {
+    font-size: 13px;
+  }
+}

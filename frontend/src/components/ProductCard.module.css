@@ -160,3 +160,136 @@
 .deleteBtn:hover {
   background: #dc2626;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .image {
+    height: 150px;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .content h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prices {
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .currentPrice span,
+  .savings span {
+    font-size: 0.7rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .priceValue {
+    font-size: 1.25rem;
+  }
+
+  .positive {
+    font-size: 0.9rem;
+  }
+
+  .status {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .actions {
+    gap: 0.3rem;
+  }
+
+  .chartBtn,
+  .alertBtn,
+  .deleteBtn {
+    padding: 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    border-radius: 6px;
+  }
+
+  .image {
+    height: 120px;
+  }
+
+  .platform {
+    padding: 3px 6px;
+    font-size: 0.65rem;
+  }
+
+  .content {
+    padding: 0.75rem;
+  }
+
+  .content h3 {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .prices {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .currentPrice,
+  .savings {
+    flex: auto;
+  }
+
+  .currentPrice span,
+  .savings span {
+    font-size: 0.65rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .priceValue {
+    font-size: 1.1rem;
+  }
+
+  .positive {
+    font-size: 0.85rem;
+  }
+
+  .status {
+    font-size: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .inStock,
+  .outOfStock {
+    font-size: 0.8rem;
+  }
+
+  .updated {
+    font-size: 0.75rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .chartBtn,
+  .alertBtn,
+  .deleteBtn {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+  }
+}
