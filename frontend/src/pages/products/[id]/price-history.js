@@ -141,14 +141,16 @@ export default function PriceHistory() {
             <div className={styles.chartContainer}>
               <h3>Price Trend Over Time</h3>
               <ResponsiveContainer width="100%" height={500}>
-                <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 100 }}>
+                <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 120 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                   <XAxis
                     dataKey="date"
                     stroke="#666"
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 11 }}
                     angle={-45}
                     textAnchor="end"
+                    height={100}
+                    interval={Math.max(0, Math.floor(chartData.length / 8) - 1)}
                   />
                   <YAxis
                     stroke="#666"
