@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Header from '../../components/Header';
-import styles from '../../styles/PriceHistory.module.css';
-import { productService } from '../../services/api';
-import { formatPrice } from '../../utils/formatPrice';
+import Header from '../../../components/Header';
+import styles from '../../../styles/PriceHistory.module.css';
+import { productService } from '../../../services/api';
+import { formatPrice } from '../../../utils/formatPrice';
 import {
   LineChart,
   Line,
