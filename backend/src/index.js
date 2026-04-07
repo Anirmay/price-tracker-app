@@ -14,9 +14,31 @@ const { scheduleNotifications } = require('./jobs/notificationJob');
 
 const app = express();
 
+// CORS Configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow localhost for development
+    if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    // Allow Render domains for production
+    if (origin && origin.includes('onrender.com')) {
+      return callback(null, true);
+    }
+    // Allow development
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+    callback(null, true); // Allow all in development, be more strict in production if needed
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json());
 
