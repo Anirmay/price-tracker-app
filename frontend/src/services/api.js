@@ -44,6 +44,8 @@ export const notificationService = {
   getNotifications: () => api.get('/notifications'),
   markAsRead: (id) => api.put(`/notifications/${id}/read`),
   deleteNotification: (id) => api.delete(`/notifications/${id}`),
+  subscribeToPush: (subscription) => api.post('/notifications/push/subscribe', { subscription }),
+  unsubscribeFromPush: (endpoint) => api.post('/notifications/push/unsubscribe', { endpoint }),
 };
 
 export default api;

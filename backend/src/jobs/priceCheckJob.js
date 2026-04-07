@@ -55,7 +55,6 @@ const checkAndTriggerAlerts = async (product, previousPrice) => {
     const alerts = await PriceAlert.find({
       productId: product._id,
       isActive: true,
-      triggered: false,
     });
 
     for (const alert of alerts) {
@@ -64,11 +63,13 @@ const checkAndTriggerAlerts = async (product, previousPrice) => {
 
       switch (alert.alertType) {
         case 'price_drop':
+          // Trigger if current price is lower than previous price
           shouldTrigger = product.currentPrice < previousPrice;
           message = `Price dropped from ₹${previousPrice} to ₹${product.currentPrice}!`;
           break;
 
         case 'percentage_drop':
+          // Calculate percentage drop from the ORIGINAL price or previous price
           const percentageDrop =
             ((previousPrice - product.currentPrice) / previousPrice) * 100;
           shouldTrigger = percentageDrop >= alert.percentageDrop;
@@ -76,50 +77,65 @@ const checkAndTriggerAlerts = async (product, previousPrice) => {
           break;
 
         case 'price_target':
+          // Trigger if price is at or below target AND we haven't notified for this target yet
           shouldTrigger = product.currentPrice <= alert.targetPrice;
           message = `Price reached your target of ₹${alert.targetPrice}!`;
           break;
 
         case 'back_in_stock':
-          shouldTrigger = product.inStock === true;
+          // Trigger if product is back in stock AND it wasn't in stock before
+          shouldTrigger = product.inStock === true && !alert.wasInStock;
           message = `Product is back in stock!`;
           break;
       }
 
       if (shouldTrigger) {
-        // Create notification record
-        const notification = new Notification({
+        // Create notification record only if we haven't already notified for this condition
+        const recentNotification = await Notification.findOne({
           userId: product.userId,
           productId: product._id,
           alertId: alert._id,
-          type: 'email',
-          title: `${product.name} - Price Alert`,
-          message: message,
-          data: {
-            currentPrice: product.currentPrice,
-            previousPrice: previousPrice,
-            targetPrice: alert.targetPrice,
-          },
-          status: 'pending',
+          createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }, // Last 24 hours
         });
 
-        await notification.save();
-
-        // Queue notification job
-        await notificationQueue.add(
-          {
-            notificationId: notification._id,
-            productId: product._id,
+        if (!recentNotification) {
+          const notification = new Notification({
             userId: product.userId,
-            message,
-          },
-          { attempts: 3, backoff: 'exponential' }
-        );
+            productId: product._id,
+            alertId: alert._id,
+            type: 'email',
+            title: `${product.name} - Price Alert`,
+            message: message,
+            data: {
+              currentPrice: product.currentPrice,
+              previousPrice: previousPrice,
+              targetPrice: alert.targetPrice,
+            },
+            status: 'pending',
+          });
 
-        // Mark alert as triggered
-        alert.triggered = true;
-        alert.triggeredAt = new Date();
-        await alert.save();
+          await notification.save();
+
+          // Queue notification job
+          await notificationQueue.add(
+            {
+              notificationId: notification._id,
+              productId: product._id,
+              userId: product.userId,
+              message,
+            },
+            { attempts: 3, backoff: 'exponential' }
+          );
+
+          // Update alert tracking info
+          if (alert.alertType === 'back_in_stock') {
+            alert.wasInStock = true;
+          }
+          alert.lastTriggeredAt = new Date();
+          await alert.save();
+
+          console.log(`Alert triggered for product ${product._id}: ${message}`);
+        }
       }
     }
   } catch (error) {

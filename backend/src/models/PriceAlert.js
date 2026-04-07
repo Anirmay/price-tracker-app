@@ -37,6 +37,14 @@ const priceAlertSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    lastTriggeredAt: {
+      type: Date,
+      default: null,
+    },
+    wasInStock: {
+      type: Boolean,
+      default: false,
+    },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -51,6 +59,6 @@ const priceAlertSchema = new mongoose.Schema(
 
 // Index for efficient querying
 priceAlertSchema.index({ userId: 1, productId: 1 });
-priceAlertSchema.index({ isActive: 1, triggered: 0 });
+priceAlertSchema.index({ isActive: 1 });
 
 module.exports = mongoose.model('PriceAlert', priceAlertSchema);

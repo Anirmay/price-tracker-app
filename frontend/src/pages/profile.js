@@ -4,6 +4,13 @@ import Header from '../components/Header';
 import styles from '../styles/Profile.module.css';
 import { authService } from '../services/api';
 import { useAuthStore } from '../hooks/store';
+import {
+  isPushNotificationSupported,
+  isSubscribedToPushNotifications,
+  subscribeToPushNotifications,
+  unsubscribeFromPushNotifications,
+  requestNotificationPermission,
+} from '../utils/pushNotifications';
 
 export default function Profile() {
   const router = useRouter();
@@ -21,6 +28,9 @@ export default function Profile() {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [expandedSection, setExpandedSection] = useState(null);
+  const [pushSupported, setPushSupported] = useState(false);
+  const [pushSubscribed, setPushSubscribed] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -29,7 +39,72 @@ export default function Profile() {
       return;
     }
     loadProfile();
+    checkPushNotificationSupport();
   }, []);
+
+  const checkPushNotificationSupport = async () => {
+    const supported = isPushNotificationSupported();
+    setPushSupported(supported);
+
+    if (supported) {
+      const subscribed = await isSubscribedToPushNotifications();
+      setPushSubscribed(subscribed);
+    }
+  };
+
+  const handleSubscribeToPush = async () => {
+    setPushLoading(true);
+    setError('');
+
+    try {
+      // Request permission first
+      const hasPermission = await requestNotificationPermission();
+
+      if (!hasPermission) {
+        setError('Notification permission denied. Please enable notifications in browser settings.');
+        setPushLoading(false);
+        return;
+      }
+
+      // Subscribe
+      const subscription = await subscribeToPushNotifications();
+
+      if (subscription) {
+        setPushSubscribed(true);
+        setSuccess('Push notifications enabled successfully!');
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        setError('Failed to enable push notifications');
+      }
+    } catch (err) {
+      console.error('Error subscribing to push:', err);
+      setError(err.message || 'Failed to enable push notifications');
+    } finally {
+      setPushLoading(false);
+    }
+  };
+
+  const handleUnsubscribeFromPush = async () => {
+    setPushLoading(true);
+    setError('');
+
+    try {
+      const success = await unsubscribeFromPushNotifications();
+
+      if (success) {
+        setPushSubscribed(false);
+        setSuccess('Push notifications disabled');
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        setError('Failed to disable push notifications');
+      }
+    } catch (err) {
+      console.error('Error unsubscribing from push:', err);
+      setError(err.message || 'Failed to disable push notifications');
+    } finally {
+      setPushLoading(false);
+    }
+  };
 
   const loadProfile = async () => {
     try {
@@ -200,10 +275,56 @@ export default function Profile() {
                       Receive real-time browser notifications even when the app is closed.
                     </p>
                     <p className={styles.hint}>
-                      Note: Your browser will ask for permission the first time
-                      notifications are sent. Click "Allow" to receive notifications.
+                      Note: Your browser will ask for permission the first time.
                     </p>
-                    <p className={styles.status}>✓ Ready to enable</p>
+                    {pushSupported ? (
+                      <>
+                        <div style={{ margin: '12px 0', display: 'flex', gap: '12px' }}>
+                          {!pushSubscribed ? (
+                            <button
+                              type="button"
+                              onClick={handleSubscribeToPush}
+                              disabled={pushLoading || !formData.notifications.push}
+                              style={{
+                                padding: '8px 16px',
+                                background: '#4caf50',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: pushLoading || !formData.notifications.push ? 'not-allowed' : 'pointer',
+                                opacity: pushLoading || !formData.notifications.push ? 0.6 : 1,
+                              }}
+                            >
+                              {pushLoading ? 'Enabling...' : 'Enable Push Notifications'}
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={handleUnsubscribeFromPush}
+                              disabled={pushLoading}
+                              style={{
+                                padding: '8px 16px',
+                                background: '#f44336',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: pushLoading ? 'not-allowed' : 'pointer',
+                                opacity: pushLoading ? 0.6 : 1,
+                              }}
+                            >
+                              {pushLoading ? 'Disabling...' : 'Disable Push Notifications'}
+                            </button>
+                          )}
+                        </div>
+                        <p className={styles.status}>
+                          {pushSubscribed ? '✓ Push notifications enabled' : '○ Push notifications disabled'}
+                        </p>
+                      </>
+                    ) : (
+                      <p className={styles.status} style={{ color: '#999' }}>
+                        ✗ Push notifications not supported in this browser
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
