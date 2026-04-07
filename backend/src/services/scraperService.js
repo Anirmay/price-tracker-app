@@ -16,14 +16,20 @@ const parseFlipkartUrl = (url) => {
 };
 
 // Scrape Amazon product details
-const scrapeAmazonProduct = async (url) => {
+const scrapeAmazonProduct = async (url, retries = 3) => {
   try {
     const headers = {
       'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'DNT': '1',
+      'Connection': 'keep-alive',
+      'Upgrade-Insecure-Requests': '1',
     };
 
-    const response = await axios.get(url, { headers, timeout: 10000 });
+    const response = await axios.get(url, { headers, timeout: 15000 });
     const $ = cheerio.load(response.data);
 
     const name = $('#productTitle').text().trim();
@@ -39,20 +45,33 @@ const scrapeAmazonProduct = async (url) => {
       inStock,
     };
   } catch (error) {
+    // Retry on 503 or network errors with exponential backoff
+    if (retries > 0 && (error.response?.status === 503 || !error.response)) {
+      const delay = Math.pow(2, 4 - retries) * 1000; // 2s, 4s, 8s
+      console.log(`Retrying Amazon scrape in ${delay}ms (${retries} retries left)...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return scrapeAmazonProduct(url, retries - 1);
+    }
     console.error('Error scraping Amazon:', error.message);
     throw error;
   }
 };
 
 // Scrape Flipkart product details
-const scrapeFlipkartProduct = async (url) => {
+const scrapeFlipkartProduct = async (url, retries = 3) => {
   try {
     const headers = {
       'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'DNT': '1',
+      'Connection': 'keep-alive',
+      'Upgrade-Insecure-Requests': '1',
     };
 
-    const response = await axios.get(url, { headers, timeout: 10000 });
+    const response = await axios.get(url, { headers, timeout: 15000 });
     const $ = cheerio.load(response.data);
 
     const name = $('.B_NuCI').text().trim();
@@ -70,6 +89,13 @@ const scrapeFlipkartProduct = async (url) => {
       inStock,
     };
   } catch (error) {
+    // Retry on 503 or network errors with exponential backoff
+    if (retries > 0 && (error.response?.status === 503 || !error.response)) {
+      const delay = Math.pow(2, 4 - retries) * 1000; // 2s, 4s, 8s
+      console.log(`Retrying Flipkart scrape in ${delay}ms (${retries} retries left)...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return scrapeFlipkartProduct(url, retries - 1);
+    }
     console.error('Error scraping Flipkart:', error.message);
     throw error;
   }
