@@ -59,10 +59,18 @@ export const subscribeToPushNotifications = async () => {
     // Get VAPID public key from environment
     const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
+    console.log('========== VAPID KEY DIAGNOSTIC START ==========');
     console.log('VAPID Public Key:', vapidPublicKey ? 'Present' : 'MISSING!');
     if (vapidPublicKey) {
       console.log('VAPID Key length:', vapidPublicKey.length);
+      console.log('VAPID Key first 20 chars:', vapidPublicKey.substring(0, 20));
+      console.log('VAPID Key last 10 chars:', vapidPublicKey.substring(vapidPublicKey.length - 10));
+      console.log('VAPID Key format valid (Base64 chars only):', /^[A-Za-z0-9_\-]+$/.test(vapidPublicKey));
+    } else {
+      console.error('VAPID public key not found in environment!');
+      console.error('Available env keys:', Object.keys(process.env).filter(k => k.includes('VAPID')));
     }
+    console.log('========== VAPID KEY DIAGNOSTIC END ==========');
 
     if (!vapidPublicKey) {
       console.error('VAPID public key not found in environment');
@@ -103,24 +111,49 @@ export const subscribeToPushNotifications = async () => {
     let applicationServerKey;
     try {
       applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
-      console.log('VAPID key converted successfully, length:', applicationServerKey.length);
+      console.log('✓ VAPID key converted successfully');
+      console.log('  - Converted length:', applicationServerKey.length, 'bytes');
+      console.log('  - Type:', applicationServerKey.constructor.name);
+      console.log('  - First 10 bytes:', Array.from(applicationServerKey.slice(0, 10)));
     } catch (error) {
-      console.error('Error converting VAPID key:', error);
+      console.error('✗ Error converting VAPID key:', error);
+      console.error('  - Error message:', error.message);
+      console.error('  - Error stack:', error.stack);
       throw new Error('Invalid VAPID key format: ' + error.message);
     }
 
     // Subscribe to push manager
     console.log('Creating new push subscription with VAPID key...');
     try {
+      console.log('Push manager subscription options:');
+      console.log('  - userVisibleOnly: true');
+      console.log('  - applicationServerKey length: ' + applicationServerKey.length);
+      
       subscription = await sw.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: applicationServerKey,
       });
-      console.log('Push subscription created successfully:', subscription);
+      
+      console.log('✓ Push subscription created successfully');
+      console.log('  - Subscription endpoint:', subscription.endpoint.substring(0, 50) + '...');
+      console.log('  - P256DH key available:', !!subscription.getKey('p256dh'));
+      console.log('  - Auth key available:', !!subscription.getKey('auth'));
     } catch (error) {
-      console.error('Push manager subscription error:', error);
-      console.error('Error code:', error.code);
-      console.error('Error name:', error.name);
+      console.error('✗ Push manager subscription FAILED');
+      console.error('  - Error type:', error.constructor.name);
+      console.error('  - Error name:', error.name);
+      console.error('  - Error code:', error.code);
+      console.error('  - Error message:', error.message);
+      console.error('  - Full error:', error);
+      
+      // Better error messages
+      if (error.message.includes('Registration failed')) {
+        console.error('HINT: "Registration failed" usually means VAPID key issue');
+        console.error('  - Check VAPID key is set in Render environment');
+        console.error('  - Check VAPID key length: ' + vapidPublicKey.length + ' (should be ~87)');
+        console.error('  - Check VAPID key has no extra spaces or newlines');
+      }
+      
       throw new Error('Browser push service error: ' + error.message);
     }
 
@@ -176,21 +209,37 @@ export const unsubscribeFromPushNotifications = async () => {
 // Helper function to convert VAPID key
 function urlBase64ToUint8Array(base64String) {
   try {
+    console.log('[urlBase64ToUint8Array] Starting conversion...');
+    console.log('  - Input length:', base64String.length);
+    console.log('  - Input type:', typeof base64String);
+    
+    // Add padding
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    console.log('  - Padding characters needed:', padding.length);
+    
     const base64 = (base64String + padding)
       .replace(/\-/g, '+')
       .replace(/_/g, '/');
-
+    
+    console.log('  - After padding and char replacement:', base64.length);
+    
+    // Decode
     const rawData = window.atob(base64);
+    console.log('  - Decoded raw data length:', rawData.length);
+    
     const outputArray = new Uint8Array(rawData.length);
 
     for (let i = 0; i < rawData.length; ++i) {
       outputArray[i] = rawData.charCodeAt(i);
     }
-
+    
+    console.log('  - Final Uint8Array length:', outputArray.length);
+    console.log('[urlBase64ToUint8Array] Conversion successful!');
+    
     return outputArray;
   } catch (error) {
-    console.error('Error converting VAPID key:', error);
-    throw new Error('Invalid VAPID key format');
+    console.error('[urlBase64ToUint8Array] FAILED - Conversion error:', error);
+    console.error('  - Error:', error.message);
+    throw new Error('Invalid VAPID key format: ' + error.message);
   }
 }
