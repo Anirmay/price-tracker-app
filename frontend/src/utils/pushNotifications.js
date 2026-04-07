@@ -122,8 +122,33 @@ export const subscribeToPushNotifications = async () => {
       throw new Error('Invalid VAPID key format: ' + error.message);
     }
 
-    // Subscribe to push manager
-    console.log('Creating new push subscription with VAPID key...');
+    // Extra runtime diagnostics
+    try {
+      console.log('=== PUSH RUNTIME DIAGNOSTICS ===');
+      console.log('  - navigator.userAgent:', navigator.userAgent);
+      console.log('  - page origin:', location.origin);
+      console.log('  - protocol:', location.protocol);
+      console.log('  - service worker scope:', sw.scope);
+      console.log('  - service worker active scriptURL:', registration && registration.active ? registration.active.scriptURL : 'none');
+
+      if (typeof registration.pushManager.permissionState === 'function') {
+        try {
+          const perm = await registration.pushManager.permissionState({ userVisibleOnly: true, applicationServerKey: applicationServerKey });
+          console.log('  - pushManager.permissionState:', perm);
+        } catch (permErr) {
+          console.warn('  - pushManager.permissionState() error:', permErr && permErr.message ? permErr.message : permErr);
+        }
+      } else {
+        console.log('  - pushManager.permissionState() not supported in this browser');
+      }
+      console.log('=== END PUSH RUNTIME DIAGNOSTICS ===');
+
+      // Subscribe to push manager
+      console.log('Creating new push subscription with VAPID key...');
+    } catch (diagErr) {
+      console.warn('Diagnostics block error:', diagErr);
+      console.log('Creating new push subscription with VAPID key...');
+    }
     try {
       console.log('Push manager subscription options:');
       console.log('  - userVisibleOnly: true');
