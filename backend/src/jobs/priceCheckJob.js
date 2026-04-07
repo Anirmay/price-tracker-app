@@ -128,10 +128,13 @@ const checkAndTriggerAlerts = async (product, previousPrice) => {
 };
 
 const schedulePriceChecks = () => {
-  // Schedule price check every 6 hours
+  // Use environment variable or default to 6 hours
+  const interval = parseInt(process.env.PRICE_CHECK_INTERVAL || '21600000', 10);
+  console.log(`Price check scheduled every ${interval / 1000 / 60} minutes`);
+  
   setInterval(() => {
     checkProductPrices();
-  }, 6 * 60 * 60 * 1000);
+  }, interval);
 
   // Run immediately on startup
   checkProductPrices();

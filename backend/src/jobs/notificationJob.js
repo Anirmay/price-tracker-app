@@ -90,10 +90,13 @@ const sendNotifications = async () => {
 };
 
 const scheduleNotifications = () => {
-  // Send notifications every 5 minutes
+  // Use environment variable or default to 5 minutes
+  const interval = parseInt(process.env.NOTIFICATION_INTERVAL || '300000', 10);
+  console.log(`Notification processing scheduled every ${interval / 1000 / 60} minutes`);
+  
   setInterval(() => {
     sendNotifications();
-  }, 5 * 60 * 1000);
+  }, interval);
 
   // Run immediately on startup
   sendNotifications();
