@@ -78,7 +78,7 @@ export default function Profile() {
       }
     } catch (err) {
       console.error('Error subscribing to push:', err);
-      setError(err.message || 'Failed to enable push notifications');
+      setError(err.message || 'Failed to enable push notifications. Check browser console for details.');
     } finally {
       setPushLoading(false);
     }

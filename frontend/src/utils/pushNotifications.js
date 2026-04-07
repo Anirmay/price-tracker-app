@@ -59,6 +59,11 @@ export const subscribeToPushNotifications = async () => {
     // Get VAPID public key from environment
     const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
+    console.log('VAPID Public Key:', vapidPublicKey ? 'Present' : 'MISSING!');
+    if (vapidPublicKey) {
+      console.log('VAPID Key length:', vapidPublicKey.length);
+    }
+
     if (!vapidPublicKey) {
       console.error('VAPID public key not found in environment');
       throw new Error('Push notification service not configured. Please contact administrator.');
@@ -93,25 +98,50 @@ export const subscribeToPushNotifications = async () => {
       return subscription;
     }
 
-    // Subscribe to push manager
-    console.log('Creating new push subscription...');
-    subscription = await sw.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
-    });
+    // Converting VAPID key
+    console.log('Converting VAPID key to Uint8Array...');
+    let applicationServerKey;
+    try {
+      applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+      console.log('VAPID key converted successfully, length:', applicationServerKey.length);
+    } catch (error) {
+      console.error('Error converting VAPID key:', error);
+      throw new Error('Invalid VAPID key format: ' + error.message);
+    }
 
-    console.log('Push subscription created:', subscription);
+    // Subscribe to push manager
+    console.log('Creating new push subscription with VAPID key...');
+    try {
+      subscription = await sw.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: applicationServerKey,
+      });
+      console.log('Push subscription created successfully:', subscription);
+    } catch (error) {
+      console.error('Push manager subscription error:', error);
+      console.error('Error code:', error.code);
+      console.error('Error name:', error.name);
+      throw new Error('Browser push service error: ' + error.message);
+    }
 
     // Send subscription to backend
     console.log('Sending subscription to backend...');
-    await notificationService.subscribeToPush(subscription);
+    try {
+      await notificationService.subscribeToPush(subscription);
+      console.log('Backend subscription successful');
+    } catch (error) {
+      console.error('Backend subscription error:', error);
+      // Unsubscribe if backend fails
+      await subscription.unsubscribe();
+      throw new Error('Failed to register with server: ' + error.message);
+    }
 
     console.log('Push notification subscription successful');
     return subscription;
   } catch (error) {
     console.error('Error subscribing to push notifications:', error);
     console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
+    console.error('Error name:', error.name);
     throw error;
   }
 };
