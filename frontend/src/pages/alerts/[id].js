@@ -5,6 +5,7 @@ import Header from '../../components/Header';
 import styles from '../../styles/AlertDetail.module.css';
 import { alertService } from '../../services/api';
 import { formatDistanceToNow } from 'date-fns';
+import { formatPrice } from '../../utils/formatPrice';
 
 export default function AlertDetail() {
   const router = useRouter();
@@ -156,12 +157,12 @@ export default function AlertDetail() {
                   <div className={styles.priceInfo}>
                     <div className={styles.priceItem}>
                       <label>Current Price</label>
-                      <p className={styles.price}>₹{alert.productId.currentPrice}</p>
+                      <p className={styles.price}>₹{formatPrice(alert.productId.currentPrice)}</p>
                     </div>
                     {alert.productId.originalPrice && (
                       <div className={styles.priceItem}>
                         <label>Original Price</label>
-                        <p className={styles.originalPrice}>₹{alert.productId.originalPrice}</p>
+                        <p className={styles.originalPrice}>₹{formatPrice(alert.productId.originalPrice)}</p>
                       </div>
                     )}
                   </div>
@@ -194,7 +195,7 @@ export default function AlertDetail() {
               {alert.alertType === 'price_target' && alert.targetPrice && (
                 <div className={styles.configItem}>
                   <label>Target Price</label>
-                  <p>₹{alert.targetPrice}</p>
+                  <p>₹{formatPrice(alert.targetPrice)}</p>
                 </div>
               )}
 

@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import styles from '../styles/Alerts.module.css';
 import { alertService } from '../services/api';
 import { formatDistanceToNow } from 'date-fns';
+import { formatPrice } from '../utils/formatPrice';
 
 export default function Alerts() {
   const router = useRouter();
@@ -115,11 +116,11 @@ export default function Alerts() {
                     )}
                     <div className={styles.details}>
                       <h3>{alert.productId.name}</h3>
-                      <p className={styles.price}>₹{alert.productId.currentPrice}</p>
+                      <p className={styles.price}>₹{formatPrice(alert.productId.currentPrice)}</p>
                       <p className={styles.platform}>{alert.productId.platform}</p>
                       <div className={styles.alertDetails}>
                         {alert.alertType === 'price_target' && alert.targetPrice && (
-                          <p>Target Price: ₹{alert.targetPrice}</p>
+                          <p>Target Price: ₹{formatPrice(alert.targetPrice)}</p>
                         )}
                         {alert.alertType === 'percentage_drop' && alert.percentageDrop && (
                           <p>Alert at {alert.percentageDrop}% drop</p>

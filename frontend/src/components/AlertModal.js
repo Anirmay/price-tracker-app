@@ -1,5 +1,6 @@
 import styles from './AlertModal.module.css';
 import { useState } from 'react';
+import { formatPrice } from '../utils/formatPrice';
 
 export default function AlertModal({ product, onClose, onSubmit }) {
   const [alertType, setAlertType] = useState('price_drop');
@@ -31,7 +32,7 @@ export default function AlertModal({ product, onClose, onSubmit }) {
           <img src={product.image} alt={product.name} />
           <div>
             <h3>{product.name}</h3>
-            <p>Current Price: ₹{product.currentPrice}</p>
+            <p>Current Price: ₹{formatPrice(product.currentPrice)}</p>
           </div>
         </div>
 

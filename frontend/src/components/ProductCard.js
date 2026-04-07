@@ -1,5 +1,6 @@
 import styles from './ProductCard.module.css';
 import { formatDistanceToNow } from 'date-fns';
+import { formatPrice } from '../utils/formatPrice';
 
 export default function ProductCard({ product, onDelete, onAddAlert }) {
   const priceChange = product.originalPrice - product.currentPrice;
@@ -21,14 +22,14 @@ export default function ProductCard({ product, onDelete, onAddAlert }) {
         <div className={styles.prices}>
           <div className={styles.currentPrice}>
             <span>Current Price</span>
-            <p className={styles.priceValue}>₹{product.currentPrice}</p>
+            <p className={styles.priceValue}>₹{formatPrice(product.currentPrice)}</p>
           </div>
 
           {priceChange > 0 && (
             <div className={styles.savings}>
               <span>savings</span>
               <p className={styles.positive}>
-                ₹{priceChange} ({percentageChange}% off)
+                ₹{formatPrice(priceChange)} ({percentageChange}% off)
               </p>
             </div>
           )}
